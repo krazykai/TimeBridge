@@ -89,12 +89,20 @@ export function generateSlots(
   const result: TimeSlot[] = []
 
   // 快取每天的日出日落，避免重複計算
+  // 使用目標時區的本地日期當 key，避免 UTC 日期切換造成誤判
+  // （例如溫哥華 UTC-7，下午 5 點在 UTC 已是隔天 00:00）
   const sunCache = new Map<string, { sunrise: Date; sunset: Date } | null>()
   const getSun = (utc: Date) => {
     if (lat == null || lng == null) return null
-    const key = `${utc.getUTCFullYear()}-${utc.getUTCMonth()}-${utc.getUTCDate()}`
-    if (!sunCache.has(key)) sunCache.set(key, getSunTimes(utc, lat, lng))
-    return sunCache.get(key) ?? null
+    const localDateStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(utc) // "YYYY-MM-DD" in target timezone
+    if (!sunCache.has(localDateStr)) {
+      // 傳入本地日期的 UTC 正午，讓 suncalc 算正確的那一天
+      const noonUTC = new Date(`${localDateStr}T12:00:00Z`)
+      sunCache.set(localDateStr, getSunTimes(noonUTC, lat, lng))
+    }
+    return sunCache.get(localDateStr) ?? null
   }
 
   for (let i = -slots; i <= slots; i++) {
