@@ -34,6 +34,7 @@ Git repo 位於 `timebridge-app/`，已部署至 Vercel。
 1. **iPhone 實機測試**: 實機確認滑動流暢度、Safari 底部工具列遮擋、深色模式、PWA 安裝
 2. **iOS 滑動慣性**: 目前無 momentum scrolling，手指快速 swipe 後停得突然，UX 略差
 3. **時區切換 scroll 不重置**: 切換時區時建議 increment resetKey，避免 scroll 停留原位造成視覺錯位
+4. **日夜時段視覺化**: 根據各時區當地的日出／日落時間，將時間軸格子區分為白天（亮色）與夜晚（暗色），讓使用者一眼看出對方城市目前是白天還是深夜，降低安排跨時區會議時的認知負擔
 
 ---
 
