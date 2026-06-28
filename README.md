@@ -23,6 +23,7 @@
 - React 19 + TypeScript
 - Vite 8
 - `Intl.DateTimeFormat` — 時區轉換（不用固定時差，自動 DST）
+- `suncalc` — 依據緯經度計算每個時間點的日出／日落，精度 ±1 分鐘，純前端不需 API
 - `vite-plugin-pwa` — Service Worker + Web Manifest
 - Pointer Events API — 統一處理滑鼠與觸控拖動
 
