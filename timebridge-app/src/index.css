@@ -1,0 +1,20 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation; /* 防止 iOS 雙擊縮放 */
+}
+
+body {
+  margin: 0;
+  overscroll-behavior: none; /* 防止 iOS pull-to-refresh */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom); /* iPhone 底部安全區 */
+}

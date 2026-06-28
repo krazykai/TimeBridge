@@ -1,0 +1,207 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0f0f13;
+  color: #f0f0f0;
+  font-family: system-ui, sans-serif;
+  min-height: 100dvh;
+  user-select: none;
+}
+
+/* ── App Layout ── */
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 32px 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a0a0b0;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.selected-date {
+  text-align: center;
+  font-size: 1rem;
+  color: #c0c0d8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Timeline 整體 ── */
+.timeline-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 時區標籤列（上方 / 下方） */
+.tz-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 16px;
+}
+
+.tz-label-name {
+  font-size: 0.75rem;
+  color: #5050a0;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.tz-label-date {
+  font-size: 0.8rem;
+  color: #9090b8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 捲動容器 ── */
+.timeline-scroll-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 中央選取線 */
+.timeline-center-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: #5566ff;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 實際捲動內容 */
+.timeline-scroll {
+  overflow-x: scroll;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  touch-action: pan-x;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.timeline-scroll:active {
+  cursor: grabbing;
+}
+
+/* 包住兩列和分隔線，確保分隔線撐滿全寬 */
+.timeline-content {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 100%;
+}
+
+/* 時間列 */
+.timeline-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* 分隔線 */
+.timeline-divider {
+  height: 1px;
+  background: #2a2a3a;
+}
+
+/* 每一格 */
+.timeline-slot {
+  flex-shrink: 0;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-right: 1px solid #1a1a28;
+}
+
+.timeline-slot.is-center {
+  background: rgba(85, 102, 255, 0.08);
+}
+
+.slot-time {
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: #7070a0;
+  white-space: nowrap;
+}
+
+.timeline-slot.is-center .slot-time {
+  color: #a0a8ff;
+  font-weight: 600;
+}
+
+/* ── 時區選擇器 ── */
+.tz-selectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.tz-select {
+  background: #1a1a24;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  color: #c0c0e0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  padding: 8px 12px;
+  cursor: pointer;
+  appearance: auto;
+  min-width: 90px;
+}
+
+.tz-select:focus {
+  outline: none;
+  border-color: #5566ff;
+}
+
+.tz-selectors-sep {
+  color: #3a3a6a;
+  font-size: 1rem;
+}
+
+/* ── 回到現在按鈕 ── */
+.now-button {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid #3a3a5a;
+  border-radius: 999px;
+  color: #8888cc;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.now-button:hover {
+  border-color: #5566ff;
+  color: #a0a8ff;
+}
+
+.now-button:active {
+  background: rgba(85, 102, 255, 0.1);
+}
