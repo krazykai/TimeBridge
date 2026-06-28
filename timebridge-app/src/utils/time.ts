@@ -1,3 +1,4 @@
+import * as SunCalc from 'suncalc'
 import type { TimeSlot } from '../types/timeZone'
 
 /** 將時間對齊到最近的 30 分鐘（無條件捨去） */
@@ -54,24 +55,67 @@ export function formatShortDate(date: Date, tz: string): string {
 }
 
 /**
+ * 計算某地某天的日出日落時間（UTC）
+ * 使用 suncalc；回傳 null 表示極晝或極夜（sunrise/sunset 為 NaN）
+ */
+function getSunTimes(
+  date: Date,
+  lat: number,
+  lng: number,
+): { sunrise: Date; sunset: Date } | null {
+  const times = SunCalc.getTimes(date, lat, lng)
+  const rise = times.sunrise
+  const set = times.sunset
+  if (!rise || !set || isNaN(rise.getTime()) || isNaN(set.getTime())) return null
+  return { sunrise: rise, sunset: set }
+}
+
+/**
  * 產生時間軸格子清單
  * @param center 中心時間點（已對齊 30 分鐘）
  * @param tz 要顯示的時區
  * @param slots 前後各幾格（總格數 = slots * 2 + 1）
+ * @param lat 緯度（用於計算日夜）
+ * @param lng 經度（用於計算日夜）
  */
-export function generateSlots(center: Date, tz: string, slots = 24): TimeSlot[] {
+export function generateSlots(
+  center: Date,
+  tz: string,
+  slots = 24,
+  lat?: number,
+  lng?: number,
+): TimeSlot[] {
   const interval = 30 * 60 * 1000
   const result: TimeSlot[] = []
+
+  // 快取每天的日出日落，避免重複計算
+  const sunCache = new Map<string, { sunrise: Date; sunset: Date } | null>()
+  const getSun = (utc: Date) => {
+    if (lat == null || lng == null) return null
+    const key = `${utc.getUTCFullYear()}-${utc.getUTCMonth()}-${utc.getUTCDate()}`
+    if (!sunCache.has(key)) sunCache.set(key, getSunTimes(utc, lat, lng))
+    return sunCache.get(key) ?? null
+  }
 
   for (let i = -slots; i <= slots; i++) {
     const utc = new Date(center.getTime() + i * interval)
     const dateLabel = formatShortDate(utc, tz)
-    const prevDateLabel = i === -slots ? null : formatShortDate(new Date(center.getTime() + (i - 1) * interval), tz)
+    const prevDateLabel =
+      i === -slots
+        ? null
+        : formatShortDate(new Date(center.getTime() + (i - 1) * interval), tz)
+
+    const sun = getSun(utc)
+    const isDay = sun
+      ? utc >= sun.sunrise && utc <= sun.sunset
+      : true // 極晝預設白天
+
     result.push({
       utc,
       label: formatTime(utc, tz),
       dateLabel,
       showDate: dateLabel !== prevDateLabel,
+      isDay,
     })
   }
 

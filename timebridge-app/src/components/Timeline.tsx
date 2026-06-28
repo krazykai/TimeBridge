@@ -6,12 +6,16 @@ const TOTAL_SLOTS = 96      // center ± 96 = 193 格（±48 小時）
 const EDGE_THRESHOLD = 20   // 距邊緣幾格時觸發延伸
 const SHIFT_SLOTS = 48      // 每次延伸移動幾格
 
+interface Coords { lat: number; lng: number }
+
 interface TimelineProps {
   selectedDate: Date
   tz1: string
   tz2: string
   tz1Label: string
   tz2Label: string
+  tz1Coords?: Coords
+  tz2Coords?: Coords
   resetKey: number
   onSelectDate: (date: Date) => void
 }
@@ -22,6 +26,8 @@ export default function Timeline({
   tz2,
   tz1Label,
   tz2Label,
+  tz1Coords,
+  tz2Coords,
   resetKey,
   onSelectDate,
 }: TimelineProps) {
@@ -34,8 +40,8 @@ export default function Timeline({
   // slotCenter 控制槽位視窗，獨立於 selectedDate
   const [slotCenter, setSlotCenter] = useState(selectedDate)
 
-  const slots1 = generateSlots(slotCenter, tz1, TOTAL_SLOTS)
-  const slots2 = generateSlots(slotCenter, tz2, TOTAL_SLOTS)
+  const slots1 = generateSlots(slotCenter, tz1, TOTAL_SLOTS, tz1Coords?.lat, tz1Coords?.lng)
+  const slots2 = generateSlots(slotCenter, tz2, TOTAL_SLOTS, tz2Coords?.lat, tz2Coords?.lng)
   const slotsRef = useRef(slots1)
   slotsRef.current = slots1
 
@@ -160,7 +166,7 @@ export default function Timeline({
               {slots2.map((slot, i) => (
                 <div
                   key={i}
-                  className={`timeline-slot ${i === TOTAL_SLOTS ? 'is-center' : ''}`}
+                  className={`timeline-slot ${i === TOTAL_SLOTS ? 'is-center' : ''} ${slot.isDay ? 'is-day' : 'is-night'}`}
                   style={{ width: SLOT_WIDTH }}
                 >
                   <span className="slot-time">{slot.label}</span>
@@ -174,7 +180,7 @@ export default function Timeline({
               {slots1.map((slot, i) => (
                 <div
                   key={i}
-                  className={`timeline-slot ${i === TOTAL_SLOTS ? 'is-center' : ''}`}
+                  className={`timeline-slot ${i === TOTAL_SLOTS ? 'is-center' : ''} ${slot.isDay ? 'is-day' : 'is-night'}`}
                   style={{ width: SLOT_WIDTH }}
                 >
                   <span className="slot-time">{slot.label}</span>

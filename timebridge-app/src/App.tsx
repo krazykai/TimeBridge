@@ -7,14 +7,16 @@ import { snapTo30Min } from './utils/time'
 import { TIME_ZONE_OPTIONS } from './data/timeZones'
 import { useTimeZoneSettings } from './hooks/useTimeZoneSettings'
 
-function getLabelForTz(tz: string): string {
-  return TIME_ZONE_OPTIONS.find(o => o.tz === tz)?.label ?? tz
+function getOptionForTz(tz: string) {
+  return TIME_ZONE_OPTIONS.find(o => o.tz === tz)
 }
 
 export default function App() {
   const [selectedDate, setSelectedDate] = useState(() => snapTo30Min(new Date()))
   const [resetKey, setResetKey] = useState(0)
   const { tz1, tz2, setTz1, setTz2 } = useTimeZoneSettings()
+  const opt1 = getOptionForTz(tz1)
+  const opt2 = getOptionForTz(tz2)
 
   const goToNow = () => {
     setSelectedDate(snapTo30Min(new Date()))
@@ -35,8 +37,10 @@ export default function App() {
         selectedDate={selectedDate}
         tz1={tz1}
         tz2={tz2}
-        tz1Label={getLabelForTz(tz1)}
-        tz2Label={getLabelForTz(tz2)}
+        tz1Label={opt1?.label ?? tz1}
+        tz2Label={opt2?.label ?? tz2}
+        tz1Coords={opt1 ? { lat: opt1.lat, lng: opt1.lng } : undefined}
+        tz2Coords={opt2 ? { lat: opt2.lat, lng: opt2.lng } : undefined}
         resetKey={resetKey}
         onSelectDate={setSelectedDate}
       />

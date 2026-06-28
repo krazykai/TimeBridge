@@ -134,8 +134,16 @@ body {
   border-right: 1px solid #1a1a28;
 }
 
+.timeline-slot.is-day {
+  background: rgba(255, 220, 100, 0.05);
+}
+
+.timeline-slot.is-night {
+  background: rgba(30, 30, 60, 0.4);
+}
+
 .timeline-slot.is-center {
-  background: rgba(85, 102, 255, 0.08);
+  background: rgba(85, 102, 255, 0.12);
 }
 
 .slot-time {
@@ -143,6 +151,14 @@ body {
   font-variant-numeric: tabular-nums;
   color: #7070a0;
   white-space: nowrap;
+}
+
+.timeline-slot.is-day .slot-time {
+  color: #9090a8;
+}
+
+.timeline-slot.is-night .slot-time {
+  color: #50507a;
 }
 
 .timeline-slot.is-center .slot-time {
